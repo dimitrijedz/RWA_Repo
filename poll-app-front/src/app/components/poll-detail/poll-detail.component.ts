@@ -4,7 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { Poll } from '../../models/poll.model';
-import { catchError, of } from 'rxjs';
+import { catchError, of, Observable } from 'rxjs';
+import { forkJoin } from 'rxjs';
+
+interface PollResults {
+  options: string[];
+  results: { [key: number]: number };
+}
 
 @Component({
   selector: 'app-poll-detail',
@@ -31,7 +37,7 @@ export class PollDetailComponent implements OnInit {
     this.loadPoll(pollId);
   }
 
-  loadPoll(pollId: number) {
+  /*loadPoll(pollId: number) {
     this.api
       .getPoll(pollId)
       .pipe(
@@ -46,6 +52,37 @@ export class PollDetailComponent implements OnInit {
           this.loadResults(poll.id);
         }
       });
+  }*/
+
+  loadPoll(pollId: number): void {
+    const poll$: Observable<Poll | null> = (this.api.getPoll(pollId) as Observable<Poll>).pipe(
+      catchError(err => {
+        this.error.set('Failed to load poll');
+        return of(null);
+      })
+    );
+
+    const results$: Observable<PollResults> = (this.api.getResults(pollId) as Observable<PollResults>).pipe(
+      catchError(err => {
+        this.error.set('Failed to load results');
+        return of({ options: [], results: {} });
+      })
+    );
+
+    forkJoin({
+      poll: poll$,
+      results: results$
+    }).subscribe(({ poll, results }) => {
+      if (!poll) return;
+
+      this.poll.set(poll);
+      const mapped = (results.options ?? []).map((opt: string, i: number) => ({
+        option: opt,
+        votes: results.results?.[i] ?? 0,
+      }));
+
+      this.results.set(mapped);
+    });
   }
 
   loadResults(pollId: number) {
@@ -107,5 +144,5 @@ export class PollDetailComponent implements OnInit {
         this.loadPoll(currentPoll.id);
         this.votedOptionIndex = 0;
       });
-  }
+    }
 }

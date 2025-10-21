@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { Poll } from '../../models/poll.model';
 import { catchError, of } from 'rxjs';
 
@@ -14,6 +15,7 @@ import { catchError, of } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
   api = inject(ApiService);
+  authService = inject(AuthService);
 
   userPolls = signal<Poll[]>([]);
   expiredUserPolls = signal<Poll[]>([]);
@@ -84,5 +86,9 @@ export class DashboardComponent implements OnInit {
         this.error.set('Failed to delete poll');
       }
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
