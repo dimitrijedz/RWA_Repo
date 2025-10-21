@@ -26,13 +26,13 @@ export class PollsService {
   }
 
   async findAllPolls(): Promise<Poll[]> {
-    return this.pollsRepository.find({ relations: ['user'] });
+    return this.pollsRepository.find({ relations: ['user', 'votes', 'votes.user'] });
   }
 
   async findOnePoll(id: number): Promise<Poll> {
     const poll = await this.pollsRepository.findOne({
       where: { id },
-      relations: ['user', 'votes'],
+      relations: ['user', 'votes', 'votes.user'],
     });
     if (!poll) {
       throw new NotFoundException(`Poll with ID ${id} not found`);

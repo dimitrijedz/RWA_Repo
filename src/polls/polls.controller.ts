@@ -37,6 +37,8 @@ export class PollsController {
   }
 
   @Post(':id/vote')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Vote on a poll' })
   @ApiResponse({ status: 201, description: 'Vote successfully recorded.' })
   @ApiResponse({ status: 400, description: 'Invalid option index.' })
@@ -46,7 +48,7 @@ export class PollsController {
     @Body() votePollDto: VotePollDto,
     @Request() req,
   ) {
-    const user = req.user || null;
+    const user = req.user;
     return this.pollsService.voteOnPoll(id, votePollDto, user);
   }
 

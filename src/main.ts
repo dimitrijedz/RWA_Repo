@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors(); // Omogući CORS
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true })); // Dodaj transform: true za automatsku transformaciju DTO-a
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true })); 
 
   // Inicijalizacija Swaggera
   const config = new DocumentBuilder()
