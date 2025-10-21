@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+  <div class="dashboard">
+    <div class="dashboard-section">
+      <h2>Your Polls</h2>
+      <ul class="poll-list">
+        <li *ngFor="let poll of userPolls()">
+          <a class="poll-link" [routerLink]="['/polls', poll.id]">{{ poll.question }}</a>
+          <div class="actions">
+            <button class="btn btn-sm btn-outline" [routerLink]="['/polls', poll.id, 'edit']">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deletePoll(poll.id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>Your Expired Polls</h2>
+      <ul class="poll-list">
+        <li *ngFor="let poll of expiredUserPolls()" class="expired">
+          <span>{{ poll.question }} (Expired)</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="dashboard-section">
+      <h2>All Polls</h2>
+      <ul class="poll-list">
+        <li *ngFor="let poll of allPolls()">
+          <a class="poll-link" [routerLink]="['/polls', poll.id]">{{ poll.question }}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="main-actions">
+      <button class="btn btn-primary" routerLink="/create">Create New Poll</button>
+      <button class="btn btn-secondary" [routerLink]="['/user/edit']">Edit Profile</button>
+    </div>
+  </div>
+</div>

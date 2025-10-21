@@ -1,0 +1,30 @@
+<div class="form-page-container">
+  <div class="form-container">
+    <h2>Create New Poll</h2>
+    <form (ngSubmit)="submit()" class="form">
+      <div class="form-group">
+        <label for="question">Question:</label>
+        <input id="question" class="form-control" [(ngModel)]="question" name="question" required />
+      </div>
+
+      <div class="form-group">
+        <label>Options:</label>
+        <div class="options-container">
+          <div class="option-group" *ngFor="let option of options; let i = index">
+            <input class="form-control" [(ngModel)]="options[i].text" [name]="'option' + i" placeholder="Option {{ i + 1 }}" required />
+            <button type="button" class="btn btn-sm btn-danger" (click)="removeOption(i)" *ngIf="options.length > 1">Remove</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm add-option-btn" (click)="addOption()">Add Option</button>
+      </div>
+
+      <div class="form-group">
+        <label for="expiresAt">Expires At (Optional):</label>
+        <input id="expiresAt" class="form-control" type="datetime-local" [(ngModel)]="expiresAt" name="expiresAt" />
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit">Create Poll</button>
+    </form>
+    <p *ngIf="error()" class="error-message">{{ error() }}</p>
+  </div>
+</div>

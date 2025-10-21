@@ -1,0 +1,43 @@
+<div class="page-container" *ngIf="poll()">
+  <div class="poll-detail-container">
+    <div class="poll-header">
+      <h2 class="poll-question">{{ poll()?.question }}</h2>
+    </div>
+
+    <div class="poll-section" *ngIf="results().length > 0">
+      <h3>Results</h3>
+      <ul class="results-list">
+        <li *ngFor="let r of results()">
+          <span class="result-option">{{ r.option }}</span>
+          <span class="result-votes">{{ r.votes }} votes</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="poll-section" *ngIf="!hasVoted(); else alreadyVotedBlock">
+      <h3>Vote</h3>
+      <div class="vote-options">
+        <label *ngFor="let opt of poll()?.options; let i = index" class="vote-option">
+          <input
+            type="radio"
+            name="vote"
+            [value]="i"
+            [(ngModel)]="votedOptionIndex"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <span class="radio-custom"></span>
+          <span class="option-text">{{ opt }}</span>
+        </label>
+      </div>
+      <button class="btn btn-primary" (click)="vote()" [disabled]="votedOptionIndex === null">
+        Submit Vote
+      </button>
+    </div>
+
+    <ng-template #alreadyVotedBlock>
+      <p class="info-message">You have already voted on this poll.</p>
+    </ng-template>
+
+    <p *ngIf="error()" class="error-message">{{ error() }}</p>
+  </div>
+</div>
